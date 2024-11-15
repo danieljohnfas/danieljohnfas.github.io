@@ -1,0 +1,18 @@
+body {
+    background-color: #f8f9fa;
+}
+
+#gallery-container img {
+    cursor: pointer;
+    transition: transform 0.3s;
+    max-width: 40%; /* Scale down image size further to 40% */
+    max-height: 40%; /* Ensures consistent aspect ratio */
+}
+
+#gallery-container img:hover {
+    transform: scale(1.05);
+}
+
+.modal-body img {
+    max-height: 70vh;
+}
