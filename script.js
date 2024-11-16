@@ -19,7 +19,7 @@ function shuffleImages() {
     shuffledImages.sort(() => Math.random() - 0.5);
 }
 
-// Display images for the current page with lazy loading
+// Display images for the current page
 function displayImages() {
     galleryContainer.innerHTML = "";
     const startIndex = currentPage * imagesPerPage;
@@ -28,8 +28,8 @@ function displayImages() {
 
     imagesToDisplay.forEach((image, index) => {
         const imgElement = document.createElement("img");
-        imgElement.setAttribute("data-src", `${imageFolder}${image}`); // Lazysizes uses data-src
-        imgElement.classList.add("col-6", "col-md-3", "img-thumbnail", "lazyload"); // lazyload class for Lazysizes
+        imgElement.src = `${imageFolder}${image}`; // Directly load images
+        imgElement.classList.add("col-6", "col-md-3", "img-thumbnail");
         imgElement.alt = `Image ${startIndex + index + 1}`;
         imgElement.onclick = () => openZoomedView(startIndex + index);
         galleryContainer.appendChild(imgElement);
@@ -38,7 +38,7 @@ function displayImages() {
     updatePagination();
 }
 
-// Update pagination buttons based on total pages
+// Update pagination buttons
 function updatePagination() {
     paginationContainer.innerHTML = "";
     const totalPages = Math.ceil(shuffledImages.length / imagesPerPage);
@@ -64,7 +64,7 @@ function goToPage(page) {
     displayImages();
 }
 
-// Open modal with the selected image in zoomed view
+// Open modal for zoomed view
 function openZoomedView(index) {
     currentZoomIndex = index;
     updateModalImage();
@@ -76,57 +76,6 @@ function updateModalImage() {
     modalImage.src = `${imageFolder}${shuffledImages[currentZoomIndex]}`; // Load full image in zoom
 }
 
-// Navigate in zoomed view
-function navigateZoomedImage(direction) {
-    currentZoomIndex = (currentZoomIndex + direction + shuffledImages.length) % shuffledImages.length;
-    updateModalImage();
-}
-
-// Download functionality with watermark
-function downloadImage() {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.src = modalImage.src;
-
-    img.onload = () => {
-        // Set canvas size to match the image
-        canvas.width = img.width;
-        canvas.height = img.height;
-
-        // Draw the image to the canvas
-        context.drawImage(img, 0, 0);
-
-        // Add watermark
-        context.font = '20px Arial';
-        context.fillStyle = 'rgba(255, 255, 255, 0.7)';
-        context.textAlign = 'right';
-        context.fillText('https://bitch.asia', img.width - 10, img.height - 10);
-
-        // Convert canvas to data URL
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/jpeg');
-        link.download = 'downloaded_from_https://bitch.asia.jpg';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-}
-
-// Share functionality
-function shareImage() {
-    const imgSrc = modalImage.src;
-    if (navigator.share) {
-        navigator.share({
-            title: "Check out this image",
-            url: imgSrc
-        }).catch(console.error);
-    } else {
-        alert("Share functionality is not supported in this browser.");
-    }
-}
-
-// Initialize gallery on load
+// Initialize gallery
 shuffleImages();
 displayImages();
